@@ -1,3 +1,4 @@
+![logo](https://github.com/user-attachments/assets/3a2ade8f-8475-4383-a993-ceaab4ea45fe)
 <h1>Fox Virtual Machine</h1>
 <h2>A virtual machine aiming to be simplistic, fast, and easily reïmplementable</h2>
 
