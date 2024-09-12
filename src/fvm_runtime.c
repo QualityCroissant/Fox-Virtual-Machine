@@ -490,7 +490,7 @@ _Bool return_address(void) { // rt
     // Otherwise:
 
     files[CST].length = fvm_registers[CSP]; // Reassign the length of the callstack to the value of CSP before decrementing CSP
-    fvm_registers[CEA] = files[CST].self[fvm_registers[CSP]--] + 1; // CEA = pop(CST), plus 1 to not run the call again
+    fvm_registers[CEA] = files[CST].self[fvm_registers[CSP]--] + 1; // CEA = pop(CST), plus 1 to not try to run the operand of the call as an instruction after return
 
     return 0;
 }
