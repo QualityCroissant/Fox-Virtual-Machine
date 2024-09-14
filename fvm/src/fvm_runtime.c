@@ -186,7 +186,7 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
 
                     return 0;
                 case 1: // For disk:
-                    fwrite(&fvm_registers[MDR], sizeof(uint8_t), 1, disk); // Write the lowest byte to disk
+                    fseek(disk, fvm_registers[MDR], SEEK_SET); // Set the offset from the beginning of the disk to MDR
 
                     return 0;
                 case 3: // For screen buffer:
@@ -265,7 +265,7 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
 
                     return 0;
                 case 1: // For Secondary Storage:
-                    fread(&fvm_registers[MDR], sizeof(uint8_t), 1, disk); // Read a byte from the disk into MDR
+                    fvm_registers[MDR] = ftell(disk); // Set MDR to current offset from beginning of disk (in bytes)
 
                     return 0;
                 case 3: // For Screen Buffer:
