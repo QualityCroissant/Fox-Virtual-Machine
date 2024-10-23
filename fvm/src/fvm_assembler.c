@@ -471,13 +471,16 @@ int main(int argc, char **argv) { // Main function
 
 				textBuffLength = 0;
 
-				if(label) // Labels shouldn't change the address of the next token
+				if(label) { // Labels shouldn't change the address of the next token
 					label = false;
-				else if(sourceInstructions[sourceInstructionsLength - 1].type == STRING) // Strings take up 1 address per character, so the address after a string should be advanced by the amount of characters in the string
-					maxAddress += rawTextLength,
+				} else {
+			        	if(sourceInstructions[sourceInstructionsLength - 1].type == STRING) // Strings take up 1 address per character, so the address after a string should be advanced by the amount of characters in the string
+				        	maxAddress += rawTextLength;
+			        	else // Otherwise, it's a single number, so the following token only has to be 1 address along
+    				    		maxAddress++;
+
 					rawTextLength = 0; // Reset this for the next literal to come around!
-				else // Otherwise, it's a single number, so the following token only has to be 1 address along
-					maxAddress++;
+				}
 			}
 		} else { // Otherwise, continue to count the amount of characters in the current literal
 			rawTextLength++;
