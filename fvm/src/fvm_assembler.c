@@ -135,12 +135,12 @@ const unsigned char DIGIT_CHARS[NO_DIGIT_CHARS] = {
 	[7] = '7',
 	[8] = '8',
 	[9] = '9',
-	[10] = 'A',
-	[11] = 'B',
-	[12] = 'C',
-	[13] = 'D',
-	[14] = 'E',
-	[15] = 'F'
+	[10] = 'a',
+	[11] = 'b',
+	[12] = 'c',
+	[13] = 'd',
+	[14] = 'e',
+	[15] = 'f'
 };
 
 bool errors = false; // Whether or not errors that should prevent output being generated have occurred
@@ -175,7 +175,7 @@ uint64_t convert(struct token *raw) { // Convert the text of a literal-token int
 		foundDigit = false; // Assume that the digit is not valid
 
 		for(uint64_t j = 0; j < NO_DIGIT_CHARS; j++) { // Try to find it in the list of valid digits
-			if(DIGIT_CHARS[j] == raw->text[i - 1]) { // If it is there
+			if(DIGIT_CHARS[j] == raw->text[i - 1] || ((DIGIT_CHARS[j] & 0b01000000) && DIGIT_CHARS[j] == (raw->text[i - 1] | 0b00100000))) { // If it is there
 				digit = j; // Set digit = the value it represents
 				foundDigit = true; // The digit is valid
 
