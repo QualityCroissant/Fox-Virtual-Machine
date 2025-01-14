@@ -1,5 +1,5 @@
 /* Fox Virtual Machine: Runtime
- * Copyright (C) 2024 Finn Chipp
+ * Copyright (C) 2024-2025 Finn Chipp
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "fvmgl.h"
+
 #define FVM_ROM "hardware/rom" // The ROM file
 #define FVM_DISK "hardware/disk" // The Disk file
 #define NO_FILES 4 // Number of files/memory channels
@@ -26,6 +28,14 @@
 #define NO_INSTRUCTIONS 27 // Number of instructions
 
 #define ALLOC_SIZE 50 // Size to reallocate/allocate memory
+
+enum fvmr_exit_code_value {
+    FVMR_EXIT_SUCCESS = 0,
+    FVMR_EXIT_FAILURE_INITIAL_ALLOCATION = 1,
+    FVMR_EXIT_FAILURE_INITIAL_FILE_ACCESS = 2,
+    FVMR_EXIT_FAILURE_EXECUTION = 3,
+    FVMR_EXIT_FAILURE_GRAPHICS_LIB = 4
+} fvmr_exit_code = FVMR_EXIT_SUCCESS;
 
 void *alloc_buff; // Buffer for memory allocation
 FILE *disk; // File pointer to disk file at boot
@@ -190,8 +200,9 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
 
                     return 0;
                 case 3: // For screen buffer:
+                    return fvmgl_update(&files[MEM].self[MDR]);
                 default: // For peripheral fd:
-                    fprintf(stderr, "fvmr -> Warning, writing to address on MCH 1 that is currently unimplemented\n");
+                    fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
 
                     return 0;
             }
@@ -206,8 +217,9 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
 
                     return 0;
                 case 3: // For screen buffer:
+                    return fvmgl_update(&files[MEM].self[fvm_registers[MDR]]);
                 default: // For peripheral fd:
-                    fprintf(stderr, "fvmr -> Warning, writing to address on MCH 1 that is currently unimplemented\n");
+                    fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
 
                     return 0;
             }
@@ -269,8 +281,11 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
 
                     return 0;
                 case 3: // For Screen Buffer:
+                    fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH INP (screen buffer). This operation is invalid.\n");
+
+                    return 1;
                 default: // For Peripheral fd:
-                    fprintf(stderr, "fvmr -> Warning, reading from address on MCH 1 that is currently unimplemented\n");
+                    fprintf(stderr, "fvmr -> Warning, reading from address on MCH that is currently unimplemented\n");
 
                     return 0;
             }
@@ -285,8 +300,11 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
 
                     return 0;
                 case 3: // For Screen Buffer:
+                    fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH OUT (screen buffer). This operation is invalid.\n");
+
+                    return 1;
                 default: // For Peripheral fd:
-                    fprintf(stderr, "fvmr -> Warning, reading from address on MCH 1 that is currently unimplemented\n");
+                    fprintf(stderr, "fvmr -> Warning, reading from address on MCH that is currently unimplemented\n");
 
                     return 0;
             }
@@ -528,10 +546,10 @@ _Bool (*instructions[NO_INSTRUCTIONS])(void) = { // Array of function-pointers f
 int main(void) { // Entry point:
 	FILE *f;
 
-	if((files[CST] = (struct fvm_file){.self = calloc(ALLOC_SIZE, sizeof(uint64_t)), .size = ALLOC_SIZE, .length = 0}).self == NULL) { // Try to initialise Callstack
-		perror("fvmr -> Could not allocate memory for Callstack");
+    if((files[CST] = (struct fvm_file){.self = calloc(ALLOC_SIZE, sizeof(uint64_t)), .size = ALLOC_SIZE, .length = 0}).self == NULL) { // Try to initialise Callstack
+        perror("fvmr -> Could not allocate memory for Callstack");
 
-		return 3;
+        return FVMR_EXIT_FAILURE_INITIAL_ALLOCATION;
     }
 
 	if((f = fopen(FVM_ROM, "rb")) == NULL) { // Try to open ROM file
@@ -539,7 +557,7 @@ int main(void) { // Entry point:
 
         free(files[CST].self);
 
-		return 2;
+		return FVMR_EXIT_FAILURE_INITIAL_FILE_ACCESS;
 	}	
 
     // Get size of ROM:
@@ -561,7 +579,7 @@ int main(void) { // Entry point:
 
 		fclose(f);
 
-		return 3;
+		return FVMR_EXIT_FAILURE_INITIAL_ALLOCATION;
 	}
 
 	fread(files[MEM].self, files[MEM].size, sizeof(uint64_t), f); // Load ROM into Main Memory
@@ -574,7 +592,20 @@ int main(void) { // Entry point:
         free(files[CST].self);
         free(files[MEM].self);
 
-        return 2;
+        return FVMR_EXIT_FAILURE_INITIAL_FILE_ACCESS;
+    }
+
+    if(fvmgl_init()) {
+        fprintf(stderr, "fvmr -> Graphics API -> Failed to initialise.\n");
+
+        free(files[CST].self);
+        free(files[MEM].self);
+
+        fclose(disk);
+
+        fvmgl_end();
+
+        return FVMR_EXIT_FAILURE_GRAPHICS_LIB;
     }
 
     // Begin execution:
@@ -583,23 +614,28 @@ int main(void) { // Entry point:
 		if(files[MEM].self[fvm_registers[CEA]] >= NO_INSTRUCTIONS) { // If a number is encountered that should be an instruction but isn't in the instructions list
 			fprintf(stderr, "fvmr -> Encountered unknown instruction '%zu'\n", files[MEM].self[fvm_registers[CEA]]);
 
-			traceback();
+			fvmr_exit_code = FVMR_EXIT_FAILURE_EXECUTION;
 
-            free(files[CST].self);
-            free(files[MEM].self);
-
-			return 4;
+			break;
 		}
 
         if(instructions[files[MEM].self[fvm_registers[CEA]]]()) { // Otherwise, try to execute the current instruction. If it returns a failed status, exit safely
-			traceback();
+			fvmr_exit_code = FVMR_EXIT_FAILURE_EXECUTION;
 
-            free(files[CST].self);
-            free(files[MEM].self);
+			break;
+		}
 
-			return 4;
+		if(fvmgl_tick()) {
+		    fprintf(stderr, "fvmr -> Graphics library encountered an error.\n");
+
+            fvmr_exit_code = FVMR_EXIT_FAILURE_GRAPHICS_LIB;
+
+            break;
 		}
 	}
+
+    if(fvmr_exit_code != FVMR_EXIT_SUCCESS) // Produce a traceback if there were errors
+        traceback();
 
     // Cleanup:
 
@@ -608,5 +644,7 @@ int main(void) { // Entry point:
 
     fclose(disk);
 
-	return 0; // Done!
+    fvmgl_end();
+
+	return fvmr_exit_code; // Done!
 }
