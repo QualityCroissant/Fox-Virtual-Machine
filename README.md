@@ -17,6 +17,9 @@ FVM now has its own demo suite hosted on Github Pages! Check it out here: https:
 All source code composing FVM is distributed under the MPL 2.0 license. FVM also dynamically links GLFW, as of v0.4-alpha,
 which is distributed under the zlib/libpng license.
 
+The full MPL 2.0 license, under which all source code in FVM is distributed, can be found in the LICENSE file.
+The full zlib/libpng license under which GLFW is distributed can be found below:-
+
 **GLFW is distributed under the following license:**
 
   Copyright © 2002-2006 Marcus Geelnard
