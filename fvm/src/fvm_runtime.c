@@ -199,7 +199,7 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
                     fseek(disk, fvm_registers[MDR], SEEK_SET); // Set the offset from the beginning of the disk to MDR
 
                     return 0;
-                case 3: // For screen buffer:
+                case 2: // For screen buffer:
                     return fvmgl_update(&files[MEM].self[MDR]);
                 default: // For peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
@@ -216,7 +216,7 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
                     fwrite(&fvm_registers[MDR], sizeof(uint8_t), 1, disk); // Write the lowest byte to disk
 
                     return 0;
-                case 3: // For screen buffer:
+                case 2: // For screen buffer:
                     return fvmgl_update(&files[MEM].self[fvm_registers[MDR]]);
                 default: // For peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
@@ -280,7 +280,7 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
                     fvm_registers[MDR] = ftell(disk); // Set MDR to current offset from beginning of disk (in bytes)
 
                     return 0;
-                case 3: // For Screen Buffer:
+                case 2: // For Screen Buffer:
                     fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH INP (screen buffer). This operation is invalid.\n");
 
                     return 1;
@@ -299,7 +299,7 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
                     fread(&fvm_registers[MDR], sizeof(uint8_t), 1, disk); // Read one byte from the disk into MDR
 
                     return 0;
-                case 3: // For Screen Buffer:
+                case 2: // For Screen Buffer:
                     fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH OUT (screen buffer). This operation is invalid.\n");
 
                     return 1;
