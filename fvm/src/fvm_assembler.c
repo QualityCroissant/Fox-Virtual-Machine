@@ -25,10 +25,10 @@ int main(int argc, char **argv) { // Main function
 
     // Run assembler components:
 
-    if((failureStatus = init_run()) || 
-       (failureStatus = lexer_run()) ||
-       (failureStatus = parser_run()) ||
-       (failureStatus = end_run())) {
+    if((failureStatus = init_run()) || // Initialise assembler components
+       (failureStatus = lexer_run()) || // Run the lexer
+       (failureStatus = parser_run()) || // Run the parser
+       (failureStatus = end_run())) { // Cleanup, finalisations, and write output to file
         return failureStatus;
     }
 
