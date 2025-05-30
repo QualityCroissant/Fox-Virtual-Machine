@@ -9,6 +9,7 @@
 #include "fvm_runtime_components/global.h"
 #include "fvm_runtime_components/instructions.h"
 #include "fvm_runtime_components/fvmgl.h"
+#include "fvm_runtime_components/fvmkbd.h"
 
 int main(void) { // Entry point:
 	FILE *f;
@@ -73,7 +74,9 @@ int main(void) { // Entry point:
         return FVMR_EXIT_FAILURE_INITIAL_FILE_ACCESS;
     }
 
-    if(fvmgl_init()) {
+    // Initialise Graphics API et al:
+
+    if(fvmgl_init()) { // Initialise fvmgl
         fprintf(stderr, "fvmr -> Graphics API -> Failed to initialise.\n");
 
         free(files[CST].self);
@@ -84,6 +87,19 @@ int main(void) { // Entry point:
         fvmgl_end();
 
         return FVMR_EXIT_FAILURE_GRAPHICS_LIB;
+    }
+
+    if(fvmkbd_init(fvmgl_screen_object.window)) { // Initialise fvmkbd
+        fprintf(stderr, "fvmr -> Keyboard API -> Failed to initialise.\n");
+
+        free(files[CST].self);
+        free(files[MEM].self);
+
+        fclose(disk);
+
+        fvmgl_end();
+
+        return FVMR_EXIT_FAILURE_KEYBOARD_LIB;
     }
 
     // Begin execution:
@@ -110,6 +126,14 @@ int main(void) { // Entry point:
 
             break;
 		}
+
+		if(fvmkbd_tick()) {
+		    fprintf(stderr, "fvmr -> Keyboard library encountered an error.\n");
+
+		    fvmr_exit_code = FVMR_EXIT_FAILURE_KEYBOARD_LIB;
+
+		    break;
+		}
 	}
 
     if(fvmr_exit_code != FVMR_EXIT_SUCCESS) // Produce a traceback if there were errors
@@ -122,6 +146,7 @@ int main(void) { // Entry point:
 
     fclose(disk);
 
+    fvmkbd_end();
     fvmgl_end();
 
 	return fvmr_exit_code; // Done!

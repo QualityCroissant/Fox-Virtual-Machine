@@ -120,7 +120,11 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
 
                     return 0;
                 case 2: // For screen buffer:
-                    return fvmgl_update(&files[MEM].self[MDR]);
+                    return fvmgl_update(&files[MEM].self[fvm_registers[MDR]]);
+                case 3: // For Keyboard:
+                    fvmkbd_get_next_keypress_as_scancode();
+
+                    return 0;
                 default: // For peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
 
@@ -138,6 +142,10 @@ _Bool store(void) { // st <mdr> at <mar> in <mch>
                     return 0;
                 case 2: // For screen buffer:
                     return fvmgl_update(&files[MEM].self[fvm_registers[MDR]]);
+                case 3: // For Keyboard:
+                    fvmkbd_get_scancode_for_key();
+
+                    return 0;
                 default: // For peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, writing to address on MCH that is currently unimplemented\n");
 
@@ -201,9 +209,13 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
 
                     return 0;
                 case 2: // For Screen Buffer:
-                    fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH INP (screen buffer). This operation is invalid.\n");
+                    fprintf(stderr, "fvmr -> Attempted to load from MAR 2 on MCH INP (screen buffer). This operation is invalid.\n");
 
                     return 1;
+                case 3: // For Keyboard:
+                    fvmkbd_get_next_keypress_as_key();
+
+                    return 0;
                 default: // For Peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, reading from address on MCH that is currently unimplemented\n");
 
@@ -220,9 +232,13 @@ _Bool load(void) { // ld to <mdr> from <mar> in <mch>
 
                     return 0;
                 case 2: // For Screen Buffer:
-                    fprintf(stderr, "fvmr -> Attempted to load from MAR 3 on MCH OUT (screen buffer). This operation is invalid.\n");
+                    fprintf(stderr, "fvmr -> Attempted to load from MAR 2 on MCH OUT (screen buffer). This operation is invalid.\n");
 
                     return 1;
+                case 3: // For Keyboard
+                    fvmkbd_get_keypress_queue_length();
+
+                    return 0;
                 default: // For Peripheral fd:
                     fprintf(stderr, "fvmr -> Warning, reading from address on MCH that is currently unimplemented\n");
 

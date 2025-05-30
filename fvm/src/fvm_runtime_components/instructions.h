@@ -7,6 +7,7 @@
 
 #include "global.h"
 #include "fvmgl.h"
+#include "fvmkbd.h"
 
 extern _Bool (*instructions[NO_INSTRUCTIONS])(void); // Array of function-pointers for each instruction
 

@@ -24,7 +24,15 @@ const char *REGISTER_NAMES[NO_REGISTERS] = {
 	"ACC (Accumulator)              ",
 	"DAT (Data)                     ",
 	"CEA (Current Execution Address)",
-	"CSP (Callstack Pointer)        "
+	"CSP (Callstack Pointer)        ",
+    "GP0 (General Purpose 0)        ",
+    "GP1 (General Purpose 1)        ",
+    "GP2 (General Purpose 2)        ",
+    "GP3 (General Purpose 3)        ",
+    "GP4 (General Purpose 4)        ",
+    "GP5 (General Purpose 5)        ",
+    "GP6 (General Purpose 6)        ",
+    "GP7 (General Purpose 7)        ",
 };
 
 void traceback(void) { // Traceback (error report)

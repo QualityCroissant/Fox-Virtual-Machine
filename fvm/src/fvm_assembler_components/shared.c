@@ -66,7 +66,15 @@ const struct label DEFAULT_LABELS[NO_DEFAULT_LABELS] = {
 	{"acc", 3},
 	{"dat", 4},
 	{"cea", 5},
-	{"csp", 6}
+	{"csp", 6},
+    {"gp0", 7},
+    {"gp1", 8},
+    {"gp2", 9},
+    {"gp3", 10},
+    {"gp4", 11},
+    {"gp5", 12},
+    {"gp6", 13},
+    {"gp7", 14},
 };
 
 const unsigned char DIGIT_CHARS[NO_DIGIT_CHARS] = {

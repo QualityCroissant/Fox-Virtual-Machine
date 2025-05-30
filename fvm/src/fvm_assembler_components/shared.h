@@ -12,7 +12,7 @@
 #define NO_INSTRUCTIONS 28 // No. instructions
 #define MAX_NO_OPERANDS 2 // Maximum operands an instruction can have
 #define NO_LEGAL_LABEL_CHARACTER_RANGES 4 // No. ranges that exist for what a legal character in a label can exist within
-#define NO_DEFAULT_LABELS 11 // Number of default labels to go in the Label Table
+#define NO_DEFAULT_LABELS 19 // Number of default labels to go in the Label Table
 #define NO_DIGIT_CHARS 16 // Nummber of characters that can represent a digit (0-9, A-Z)
 
 #define DEFAULT_OUTPUT_FILENAME "a.fb"
