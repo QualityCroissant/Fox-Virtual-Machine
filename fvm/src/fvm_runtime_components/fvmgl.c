@@ -6,6 +6,8 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
+// This file handles all primary GLFW and GL operations. As such, fvmkbd cannot be used until fvmgl has been initialised.
+
 #include "fvmgl.h"
 
 const char *FVMGL_GL_ERROR_DESCRIPTIONS[] = {
