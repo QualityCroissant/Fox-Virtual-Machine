@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+/usr/bin/fvm/fvma "$@"
+
+if [[ "${#@}" = 2 ]]; then
+    cp "$2" /usr/bin/fvm/hardware/rom
+else
+    cp a.fb /usr/bin/fvm/hardware/rom
+fi
