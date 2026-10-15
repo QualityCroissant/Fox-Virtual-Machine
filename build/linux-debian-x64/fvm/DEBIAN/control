@@ -2,7 +2,7 @@ Package: fvm
 Architecture: amd64
 Version: 0.9-beta-deb1
 Section: misc
-Maintainer: Finn Chipp <finnchipp@gmail.com>
+Maintainer: QualityCroissant <sarazbryndurf@gmail.com>
 Priority: optional
 Description: Virtual Machine Runtime and Assembler for the Fox architecture.
  Used to build Fox Binary (.fb) files from Fox Assembly (.fa) files, and run Fox Binary (.fb) programs.
