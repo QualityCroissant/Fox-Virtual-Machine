@@ -40,4 +40,6 @@ The full zlib/libpng license under which GLFW is distributed can be found below:
 
       This notice may not be removed or altered from any source distribution.
 
+<h3>AI Policy</h3>
+<img width="1298" height="441" alt="image" src="https://github.com/user-attachments/assets/1fde1c08-b912-48b8-be47-89308521f8bc" />
 
