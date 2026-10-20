@@ -1,0 +1,16 @@
+Package: fvm
+Architecture: amd64
+Version: 0.9-beta-deb1
+Section: misc
+Maintainer: Finn Chipp <finnchipp@gmail.com>
+Priority: optional
+Description: Virtual Machine Runtime and Assembler for the Fox architecture.
+ Used to build Fox Binary (.fb) files from Fox Assembly (.fa) files, and run Fox Binary (.fb) programs.
+ The following commands are made available under /usr/bin as a result of installing this package:
+ fvma source.fa [binary.fb] - Assemble source.fa into binary.fb; binary.fb is optional, and if not specified defaults to a.fb
+ fvmr - Run FVM using the rom and disk files at the location of their installation from this package
+ fvmlr binary.fb - Load the contents of binary.fb into the virtual machine rom
+ fvmld file - Load the contents of file into the virtual machine disk
+ fvmalr source.fa [binary.fb] - The same as fvma, but copies the resulting binary file to the virtual machine rom automatically afterwards
+Build-Essential: yes
+Depends: libglfw3

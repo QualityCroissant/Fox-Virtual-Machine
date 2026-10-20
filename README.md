@@ -4,11 +4,13 @@
 
 <h3>Getting Started</h3>
 
-**Important:** FVM now supports graphics! However, this means you must have GLFW installed on your system to be able to use it.
+**Important:** FVM now supports graphics! However, this means you must have GLFW installed on your system to be able to use it. If you're installing via a pre-packaged version, like the .deb file, it should automatically install it for you alongside FVM!
 
 To set up ready to use FVM, download the latest release under the releases section, unzip it, and enjoy!
 If you want to learn how to use it, the wiki contains a basic guide, which also describes how it works.
-Any additions, forks, and edits are very much welcomed. However, please be patient, as the project is still in its alpha stage!
+Any additions, forks, and edits are very much welcomed. ~~However, please be patient, as the project is still in its alpha stage!~~
+FVM is now in beta! This means less bugs and issues should be encountered overall, and the project is much
+more feature-rich than it was, though patience is still appreciated while everything continues to be ironed out!
 
 <h3>Just want to give it a try?</h3>
 
@@ -38,4 +40,6 @@ The full zlib/libpng license under which GLFW is distributed can be found below:
 
       This notice may not be removed or altered from any source distribution.
 
+<h3>AI Policy</h3>
+<img width="1298" height="441" alt="image" src="https://github.com/user-attachments/assets/1fde1c08-b912-48b8-be47-89308521f8bc" />
 
